@@ -138,3 +138,73 @@
 3. 打开`autojs/src/androidTest`目录下的测试类
 4. 点击类名旁边的运行按钮开始测试
 5. 随后可能因设备而异需要在手机上点击允许测试apk安装
+
+## 本地一键构建与签名（推荐）
+
+除上面手动分步构建外，项目提供一键本地构建脚本，自动串联「编译 JS 模块 → 生成模板 APK → 编译并签名 release」，无需记忆多步命令。
+
+### 1. 准备签名凭据
+
+release 包必须签名才能安装。本地提供两种方式（优先级均低于 CI 环境变量）：
+
+- **方式 A：app/signing.properties（推荐）**
+  在 `app/` 目录下新建 `signing.properties`（该文件已被 `.gitignore` 忽略，不会入库）：
+
+  ```properties
+  STORE_FILE=/绝对/或/相对/路径/my-release-key.jks
+  STORE_PASSWORD=你的密钥库密码
+  KEY_ALIAS=autox
+  KEY_PASSWORD=你的密钥密码
+  ```
+
+- **方式 B：环境变量**
+  设置 `KEYSTORE_FILE`、`KEYSTORE_PASSWORD`、`KEY_ALIAS`、`KEY_PASSWORD`，本地未配置文件时回退使用。
+
+若两者都未配置，构建仍会执行，但产出的是**未签名 release**（无法安装），仅用于验证编译链路。
+
+### 2. 生成 keystore（如还没有）
+
+```shell
+keytool -genkeypair -v -keystore my-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias autox
+```
+
+### 3. 一键构建
+
+Windows（PowerShell）：
+
+```powershell
+.\build_local.ps1            # 默认构建 v7
+.\build_local.ps1 v7_mini    # 构建体积更小的 v7_mini
+```
+
+> 若提示无法运行脚本，请用：`powershell -ExecutionPolicy Bypass -File .\build_local.ps1`
+
+Git Bash / Linux / macOS：
+
+```shell
+./build_local.sh             # 默认构建 v7
+./build_local.sh v7_mini     # 构建 v7_mini
+```
+
+脚本会自动检查 Node.js（≥20）与签名配置，完成后列出产物路径，例如：
+`app/build/outputs/apk/v7/release/app-v7-arm64-v8a-release.apk`。
+
+### 4. 直接使用 Gradle task
+
+不希望用脚本时，也可直接调用组合 task：
+
+```shell
+./gradlew buildV7ReleaseLocal
+./gradlew buildV7MiniReleaseLocal
+```
+
+### 5. 签名凭据的存放位置
+
+密钥库文件与口令均属私密信息，**不要写入本文件，也不要提交到版本库**：
+
+- keystore 文件应放在仓库目录**之外**；若必须放在仓库内，请在 `.gitignore` 中显式忽略其路径 —— 无扩展名的 keystore（例如名为 `v7release` 的文件）**不会**被 `*.jks` / `*.keystore` 规则覆盖。
+- 口令只写在 `app/signing.properties`（已被忽略）或 CI Secrets 中。
+- 若不慎曾把口令写入会被提交的文件，应视为已泄漏：请在可信机器上用 `keytool` 重新生成密钥库并更换口令，而不仅是删掉那几行文字（历史提交仍可检出）。
+
+
+> 说明：以上 task 会自动依赖 `:autojs:buildJsModule`、`app:buildTemplateApp` 与对应的 `assemble<V>Release`，无需手动分步执行。

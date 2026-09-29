@@ -25,3 +25,18 @@ autojs/.cxx/ndk_locator_record_68547592.json
 autojs/.cxx/ndk_locator_record_68547592_key.json
 *.aab
 output-metadata.json
+
+# ===== 本地签名凭据（切勿提交到版本库） =====
+app/signing.properties
+*.jks
+*.keystore
+# 无扩展名的 keystore 不会被上面的通配规则覆盖，必须逐条列出
+/app/v7release
+
+# ===== 构建产物（含上百 MB 的发布 APK，不入库） =====
+/app/v7/
+/app/v7_mini/
+
+# ===== 工具与本地临时文件 =====
+/.workbuddy/
+/mv_err.txt

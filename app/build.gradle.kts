@@ -1,6 +1,7 @@
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import java.io.FileNotFoundException
 import java.util.Base64
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -61,21 +62,49 @@ android {
             isUniversalApk = false
         }
     }
-    val signing =
+    // 签名配置优先级：① CI 环境变量(KEYSTORE_BASE64) ② 本地 app/signing.properties ③ 本地环境变量(KEYSTORE_FILE)
+    val signing = run {
+        // ① CI：从 Base64 解码 keystore
         if (System.getenv("CI") == "true" && !System.getenv("KEYSTORE_BASE64").isNullOrEmpty()) {
             val file = File.createTempFile("key", "jks")
-            val bytes = Base64.getDecoder().decode(System.getenv("KEYSTORE_BASE64"))
-            file.writeBytes(bytes)
+            file.writeBytes(Base64.getDecoder().decode(System.getenv("KEYSTORE_BASE64")))
             signingConfigs.create("release") {
                 enableV1Signing = true
                 enableV2Signing = true
                 enableV3Signing = true
-                storeFile = file
+                this.storeFile = file
                 storePassword = System.getenv("KEYSTORE_PASSWORD")
                 keyAlias = System.getenv("KEY_ALIAS")
                 keyPassword = System.getenv("KEY_PASSWORD")
             }
-        } else null
+        }
+        // ② 本地：app/signing.properties（不入库，字段见 README「本地一键构建与签名」）
+        else {
+            val propsFile = rootProject.file("app/signing.properties")
+            if (propsFile.exists()) {
+                val props = Properties().apply { load(propsFile.inputStream()) }
+                val storeFilePath = props.getProperty("STORE_FILE")
+                val storePassword = props.getProperty("STORE_PASSWORD")
+                val keyAlias = props.getProperty("KEY_ALIAS")
+                val keyPassword = props.getProperty("KEY_PASSWORD")
+                val storeFile = if (!storeFilePath.isNullOrBlank()) File(storeFilePath) else null
+                if (storeFile != null && storeFile.exists() && !storePassword.isNullOrBlank() && !keyAlias.isNullOrBlank()) {
+                    signingConfigs.create("release") {
+                        enableV1Signing = true
+                        enableV2Signing = true
+                        enableV3Signing = true
+                        this.storeFile = storeFile
+                        this.storePassword = storePassword
+                        this.keyAlias = keyAlias
+                        this.keyPassword = keyPassword ?: storePassword
+                    }
+                } else {
+                    logger.warn("⚠️ app/signing.properties 存在，但 STORE_FILE($storeFilePath) 缺失或密码/别名不完整，release 将不签名")
+                    null
+                }
+            } else null
+        }
+    }
 
     buildTypes {
         named("debug") {
@@ -339,5 +368,20 @@ tasks.register("buildDocs") {
             into(File(projectDir, "src/main/assets/docs/v2"))
         }
         buildFile.delete()
+    }
+}
+
+// ===== 本地一键构建（串联：JS 模块编译 -> 模板 APK -> 签名 release） =====
+// 用法：
+//   ./gradlew buildV7ReleaseLocal          # 构建 v7 签名 release
+//   ./gradlew buildV7MiniReleaseLocal       # 构建 v7_mini 签名 release（体积更小）
+// 需先配置 app/signing.properties 或 CI 环境变量，否则产物为【未签名】release。
+listOf("V7" to "v7", "V7Mini" to "v7_mini").forEach { (taskSuffix, flavor) ->
+    tasks.register("build${taskSuffix}ReleaseLocal") {
+        group = "build"
+        description = "本地一键构建 $flavor 签名 release（依赖 :autojs:buildJsModule 与 app:buildTemplateApp）"
+        dependsOn(":autojs:buildJsModule")
+        dependsOn("buildTemplateApp")
+        dependsOn(":app:assemble${flavor.replaceFirstChar { it.uppercase() }}Release")
     }
 }
