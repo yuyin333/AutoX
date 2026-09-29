@@ -7,9 +7,9 @@ import android.provider.Settings
 import android.text.TextUtils
 import com.stardust.app.GlobalAppContext
 import com.stardust.app.GlobalAppContext.get
+import com.stardust.autojs.core.accessibility.AccessibilityServiceSettings
 import com.stardust.autojs.core.util.ProcessShell
 import com.stardust.view.accessibility.AccessibilityServiceUtils.isAccessibilityServiceEnabled
-import java.util.*
 
 /**
  * Created by Stardust on 2017/7/1.
@@ -17,21 +17,11 @@ import java.util.*
 
 object AccessibilityServiceTool {
 
-    private const val cmd = "enabled=$(settings get secure enabled_accessibility_services)\n" +
-            "pkg=%s\n" +
-            "if [[ \$enabled == *\$pkg* ]]\n" +
-            "then\n" +
-            "echo already_enabled\n" +
-            "else\n" +
-            "enabled=\$pkg:\$enabled\n" +
-            "settings put secure enabled_accessibility_services \$enabled\n" +
-            "fi\n" +
-            "settings put secure accessibility_enabled 1"
-
     fun enableAccessibilityServiceByRoot(context: Context, accessibilityService: Class<out AccessibilityService>): Boolean {
         val serviceName = context.packageName + "/" + accessibilityService.name
         return try {
-            TextUtils.isEmpty(ProcessShell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error)
+            val script = AccessibilityServiceSettings.buildEnableScript(serviceName)
+            TextUtils.isEmpty(ProcessShell.execCommand(script, true).error)
         } catch (ignored: Exception) {
             false
         }

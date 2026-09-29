@@ -9,12 +9,12 @@ import com.stardust.app.GlobalAppContext;
 import org.autojs.autojs.Pref;
 import org.autojs.autoxjs.R;
 
+import com.stardust.autojs.core.accessibility.AccessibilityServiceSettings;
 import com.stardust.autojs.core.util.ProcessShell;
 import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
 import com.story.real.store.service.PeAccessibilityService;
 
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,21 +51,11 @@ public class AccessibilityServiceTool {
         }
     }
 
-    private static final String cmd = "enabled=$(settings get secure enabled_accessibility_services)\n" +
-            "pkg=%s\n" +
-            "if [[ $enabled == *$pkg* ]]\n" +
-            "then\n" +
-            "echo already_enabled\n" +
-            "else\n" +
-            "enabled=$pkg:$enabled\n" +
-            "settings put secure enabled_accessibility_services $enabled\n" +
-            "fi\n" +
-            "settings put secure accessibility_enabled 1";
-
     public static boolean enableAccessibilityServiceByRoot(Class<? extends android.accessibilityservice.AccessibilityService> accessibilityService) {
         String serviceName = GlobalAppContext.get().getPackageName() + "/" + accessibilityService.getName();
         try {
-            return TextUtils.isEmpty(ProcessShell.execCommand(String.format(Locale.getDefault(), cmd, serviceName), true).error);
+            String script = AccessibilityServiceSettings.buildEnableScript(serviceName);
+            return TextUtils.isEmpty(ProcessShell.execCommand(script, true).error);
         } catch (Exception e) {
             String msg = e.getMessage();
             if (msg != null && (msg.contains("error=13") || msg.contains("Permission denied"))) {

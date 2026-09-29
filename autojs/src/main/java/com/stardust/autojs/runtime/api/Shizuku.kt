@@ -2,6 +2,7 @@ package com.stardust.autojs.runtime.api
 
 import android.content.Context
 import com.stardust.autojs.annotation.ScriptInterface
+import com.stardust.autojs.core.accessibility.AccessibilityServiceSettings
 import com.stardust.autojs.core.shizuku.ShizukuClient
 import com.stardust.autojs.core.util.Shell2
 import kotlinx.coroutines.runBlocking
@@ -37,8 +38,11 @@ class Shizuku(context: Context) {
 
     @ScriptInterface
     fun openAccessibility() {
+        // 走与 root 通道完全相同的脚本：只覆盖本包条目、保留其它 App 的无障碍服务。
+        // 旧实现是 `settings put ... "<本包组件>"`，会把整个列表替换掉，
+        // 从而把用户已启用的其它无障碍服务（如 TalkBack）一并关掉。
         runShizukuShellCommand(
-            "settings put secure enabled_accessibility_services ${packageName}/${accessibilityServiceName}"
+            AccessibilityServiceSettings.buildEnableScript("$packageName/$accessibilityServiceName")
         )
     }
 
