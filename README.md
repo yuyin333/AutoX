@@ -151,11 +151,16 @@ release 包必须签名才能安装。本地提供两种方式（优先级均低
   在 `app/` 目录下新建 `signing.properties`（该文件已被 `.gitignore` 忽略，不会入库）：
 
   ```properties
-  STORE_FILE=/绝对/或/相对/路径/my-release-key.jks
+  STORE_FILE=D:/keys/my-release-key.jks
   STORE_PASSWORD=你的密钥库密码
   KEY_ALIAS=autox
   KEY_PASSWORD=你的密钥密码
   ```
+
+  > - `STORE_FILE` 推荐写**绝对路径**，并把 keystore 放在仓库目录之外。
+  > - 写相对路径时，一律**按仓库根目录**解析（与是从仓库根还是从 `app/` 目录启动 Gradle 无关）。
+  > - 路径填错**不会报错中断构建**，只会静默产出**未签名** release，日志里仅一行 `⚠️` 警告。
+  >   打完包请用 `apksigner verify --print-certs <apk>` 确认签名状态，或直接看构建日志里有没有那条警告。
 
 - **方式 B：环境变量**
   设置 `KEYSTORE_FILE`、`KEYSTORE_PASSWORD`、`KEY_ALIAS`、`KEY_PASSWORD`，本地未配置文件时回退使用。

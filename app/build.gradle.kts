@@ -87,7 +87,10 @@ android {
                 val storePassword = props.getProperty("STORE_PASSWORD")
                 val keyAlias = props.getProperty("KEY_ALIAS")
                 val keyPassword = props.getProperty("KEY_PASSWORD")
-                val storeFile = if (!storeFilePath.isNullOrBlank()) File(storeFilePath) else null
+                // 相对路径必须按仓库根解析：File(path) 用的是 JVM 工作目录，
+                // 一旦从 app/ 目录启动 Gradle 就会解析失败 → storeFile.exists() 为
+                // false → 静默退化成未签名 release（只有一行 warn，极易漏看）。
+                val storeFile = storeFilePath?.takeIf { it.isNotBlank() }?.let { rootProject.file(it) }
                 if (storeFile != null && storeFile.exists() && !storePassword.isNullOrBlank() && !keyAlias.isNullOrBlank()) {
                     signingConfigs.create("release") {
                         enableV1Signing = true
