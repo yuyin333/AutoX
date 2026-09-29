@@ -20,6 +20,7 @@ import com.stardust.autojs.project.Constant
 import com.stardust.autojs.project.LaunchConfig
 import com.stardust.autojs.project.ProjectConfig
 import com.stardust.autojs.project.SigningConfig
+import com.stardust.autojs.util.PermissionUtil
 import com.stardust.pio.PFiles
 import com.stardust.toast
 import kotlinx.coroutines.Dispatchers
@@ -638,7 +639,67 @@ class BuildViewModel(private val app: Application, private var source: String) :
         syncToProjectConfig()
         //打包前自动保存配置，下次进入打包页时自动加载上次配置
         saveConfig(showToast = false)
+        val outputError = withContext(Dispatchers.IO) { checkOutputWritable() }
+        if (outputError != null) {
+            onBuildFailed(IllegalStateException(outputError))
+            return@launch
+        }
         doBuildingApk()
+    }
+
+    /**
+     * 打包前校验输出目录是否真的可写，避免把权限问题拖延到压包阶段才以
+     * "open failed: EPERM" 的形式暴露出来（ApkBuilder 的 ensureDir 失败是静默的）。
+     *
+     * @return null 表示可写；否则返回可直接展示给用户的错误文案
+     */
+    private fun checkOutputWritable(): String? {
+        val dir = File(outputPath)
+        if (!isInAppPrivateDir(dir) && !PermissionUtil.checkStoragePermission()) {
+            return app.getString(R.string.text_error_no_storage_permission)
+        }
+        if (!dir.exists() && !dir.mkdirs()) {
+            return app.getString(R.string.format_error_output_dir_not_writable, dir.path)
+        }
+        if (!dir.isDirectory || !dir.canWrite()) {
+            return app.getString(R.string.format_error_output_dir_not_writable, dir.path)
+        }
+        //分区存储下 canWrite() 可能返回失真结果，这里做一次真实的写文件测试
+        val testFile = File(dir, ".autox_write_test")
+        try {
+            if (testFile.exists() && !testFile.delete()) {
+                return app.getString(R.string.format_error_output_dir_not_writable, dir.path)
+            }
+            if (!testFile.createNewFile()) {
+                return app.getString(R.string.format_error_output_dir_not_writable, dir.path)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "output dir is not writable: ${dir.path}", e)
+            return app.getString(R.string.format_error_output_dir_not_writable, dir.path)
+        } finally {
+            testFile.delete()
+        }
+        return null
+    }
+
+    private fun isInAppPrivateDir(dir: File): Boolean {
+        val canonical = try {
+            dir.canonicalPath
+        } catch (e: Exception) {
+            dir.path
+        }
+        return listOfNotNull(
+            app.filesDir,
+            app.cacheDir,
+            app.getExternalFilesDir(null),
+            app.externalCacheDir
+        ).any { root ->
+            try {
+                canonical.startsWith(root.canonicalPath)
+            } catch (e: Exception) {
+                false
+            }
+        }
     }
 
     fun checkInputs(viewModel: BuildViewModel = this): Boolean {
@@ -662,7 +723,20 @@ class BuildViewModel(private val app: Application, private var source: String) :
             GlobalAppContext.toast(R.string.text_template_apk_not_found)
             return@coroutineScope null
         }
-        val apkBuilder = ApkBuilder(templateApk, outApk, tmpDir.path)
+        val apkBuilder = try {
+            ApkBuilder(templateApk, outApk, tmpDir.path)
+        } catch (e: Exception) {
+            //ApkBuilder 构造即校验输出目录，失败时不要让它冒泡成未捕获异常
+            onBuildFailed(
+                IllegalStateException(
+                    app.getString(
+                        R.string.format_error_output_dir_not_writable,
+                        outApk.parent ?: outputPath
+                    ), e
+                )
+            )
+            return@coroutineScope null
+        }
 
         val j = launch {
             apkBuilder.progressState.onEach { state ->

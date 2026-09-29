@@ -493,6 +493,8 @@
     <string name="air_dialog_description_failed_unknown">未知错误</string>
     <string name="air_dialog_action_failed">OK</string>
     <string name="text_template_apk_not_found">找不到模板apk，请把"build/outputs/apk/common/release"目录下的apk文件复制到"app/src/main/assets"并命名为"template.apk"再重新构建</string>
+    <string name="text_error_no_storage_permission">没有存储权限，无法写入输出目录。请在系统设置中授予「所有文件访问权限」，或把输出目录改到应用私有目录后重试。</string>
+    <string name="format_error_output_dir_not_writable">输出目录不可写：%1$s。请更换输出目录（建议改到应用私有目录）后重试。</string>
     <string name="desc_back">后退</string>
     <string name="desc_add_icon">添加图标</string>
     <string name="text_default_signature">默认签名</string>

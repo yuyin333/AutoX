@@ -472,6 +472,10 @@ class ApkBuilder(
 
     init {
         PFiles.ensureDir(outApkFile.path)
+        val outDir = outApkFile.parentFile
+        if (outDir == null || (!outDir.exists() && !outDir.mkdirs()) || !outDir.isDirectory) {
+            throw IOException("Failed to create output directory: ${outDir?.path}")
+        }
     }
 
 }
