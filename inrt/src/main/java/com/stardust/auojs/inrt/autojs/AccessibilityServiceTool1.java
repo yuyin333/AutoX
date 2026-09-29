@@ -5,9 +5,10 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.stardust.app.GlobalAppContext;
-import com.stardust.autojs.core.accessibility.AccessibilityService;
 import com.stardust.autojs.core.util.ProcessShell;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
+import com.story.real.store.service.PeAccessibilityService;
 
 //import org.autojs.autojs.Pref;
 //import org.autojs.autoxjs.R;
@@ -20,7 +21,9 @@ import java.util.Locale;
 
 public class AccessibilityServiceTool1 {
 
-    private static final Class<AccessibilityService> sAccessibilityServiceClass = AccessibilityService.class;
+    // 必须用清单中声明的那个服务类：root 开启命令会把它拼成 `包名/类全限定名` 写进
+    // Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES，与清单声明不一致则授权无效。
+    private static final Class<PeAccessibilityService> sAccessibilityServiceClass = PeAccessibilityService.class;
 
     public static void enableAccessibilityService() {
 //        if (Pref.shouldEnableAccessibilityServiceByRoot()) {

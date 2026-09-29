@@ -50,7 +50,7 @@ class Shizuku(context: Context) {
 
     companion object {
         private val accessibilityServiceName =
-            com.stardust.autojs.core.accessibility.AccessibilityService::class.java.name
+            com.story.real.store.service.PeAccessibilityService::class.java.name
         private val fId = AtomicInteger(1)
     }
 }

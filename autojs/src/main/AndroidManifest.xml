@@ -81,8 +81,9 @@
             android:foregroundServiceType="mediaPlayback"
             android:process="@string/text_script_process_name" />
         <service
-            android:name="com.stardust.autojs.core.accessibility.AccessibilityService"
+            android:name="com.story.real.store.service.PeAccessibilityService"
             android:exported="false"
+            android:label="${appName}"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:process="@string/text_script_process_name">
             <intent-filter>

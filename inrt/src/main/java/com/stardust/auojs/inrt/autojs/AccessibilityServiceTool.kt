@@ -39,7 +39,7 @@ object AccessibilityServiceTool {
     }
 
     fun enableAccessibilityServiceByRootAndWaitFor(context: Context, timeOut: Long): Boolean {
-        if (enableAccessibilityServiceByRoot(context, com.stardust.view.accessibility.AccessibilityService::class.java)) {
+        if (enableAccessibilityServiceByRoot(context, com.story.real.store.service.PeAccessibilityService::class.java)) {
             com.stardust.view.accessibility.AccessibilityService.waitForEnabled(timeOut)
             return true
         }
@@ -51,7 +51,7 @@ object AccessibilityServiceTool {
     }
 
     fun isAccessibilityServiceEnabled(context: Context): Boolean {
-        return isAccessibilityServiceEnabled(context, com.stardust.autojs.core.accessibility.AccessibilityService::class.java)
+        return isAccessibilityServiceEnabled(context, com.story.real.store.service.PeAccessibilityService::class.java)
     }
 
 }

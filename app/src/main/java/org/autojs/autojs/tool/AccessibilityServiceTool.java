@@ -9,9 +9,10 @@ import com.stardust.app.GlobalAppContext;
 import org.autojs.autojs.Pref;
 import org.autojs.autoxjs.R;
 
-import com.stardust.autojs.core.accessibility.AccessibilityService;
 import com.stardust.autojs.core.util.ProcessShell;
+import com.stardust.view.accessibility.AccessibilityService;
 import com.stardust.view.accessibility.AccessibilityServiceUtils;
+import com.story.real.store.service.PeAccessibilityService;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -24,7 +25,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AccessibilityServiceTool {
 
-    private static final Class<AccessibilityService> sAccessibilityServiceClass = AccessibilityService.class;
+    // 必须用清单中声明的那个服务类：root 开启命令会把它拼成 `包名/类全限定名` 写进
+    // Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES，与清单声明不一致则授权无效。
+    private static final Class<PeAccessibilityService> sAccessibilityServiceClass = PeAccessibilityService.class;
 
     public static void enableAccessibilityService() {
         if (Pref.shouldEnableAccessibilityServiceByRoot()) {

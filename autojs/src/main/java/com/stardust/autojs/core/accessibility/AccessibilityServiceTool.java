@@ -9,6 +9,8 @@ import android.util.Log;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.R;
 import com.stardust.autojs.core.util.ProcessShell;
+import com.stardust.view.accessibility.AccessibilityService;
+import com.story.real.store.service.PeAccessibilityService;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -21,7 +23,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AccessibilityServiceTool {
 
-    private static final Class<AccessibilityService> sAccessibilityServiceClass = AccessibilityService.class;
+    // 必须用清单中声明的那个服务类：root 开启命令会把它拼成 `包名/类全限定名` 写进
+    // Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES，与清单声明不一致则授权无效。
+    private static final Class<PeAccessibilityService> sAccessibilityServiceClass = PeAccessibilityService.class;
 
     private static final String cmd = "enabled=$(settings get secure enabled_accessibility_services)\n" +
             "pkg=%s\n" +
