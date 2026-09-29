@@ -1,0 +1,9 @@
+# ===== 换行符策略 =====
+# 本机 core.autocrlf=true（Windows 默认），签出时会把文本文件转成 CRLF。
+# shell 脚本一旦带 CRLF，在 Git Bash / Linux / macOS 下会以
+# "bad interpreter: /usr/bin/env: bash^M" 失败，因此下面两类强制保持 LF。
+#
+# 注意：不要在此添加 `* text=auto`，那会让全部历史文件重新规范化，
+# 产生一次覆盖全仓的巨大 diff。
+*.sh    text eol=lf
+gradlew text eol=lf
