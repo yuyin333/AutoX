@@ -23,7 +23,7 @@
     <string name="text_work_manager" translatable="false">WorkManager</string>
 
     <string name="text_intent_run_script">允许使用广播运行脚本</string>
-    <string name="text_accessibility_service_description">使脚本自动操作(点击、长按、滑动等)所需，若关闭则只能执行不涉及自动操作的脚本。</string>
+    <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
     <string name="text_new_file">新建文件</string>
     <string name="text_create_fail">创建失败</string>
     <string name="text_please_input_name">请输入名称</string>
