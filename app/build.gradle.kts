@@ -155,12 +155,15 @@ android {
     applicationVariants.all {
         val variant = this
         if (variant.flavorName == "v7_mini") {
+            // 只裁掉 codeeditor（体积大头）。template.apk 必须保留：
+            // 打包功能要靠它自举 —— v7_mini 若不带内置模板，一旦用户手机上那份
+            // 「导入模板」失效，就只剩「必须手动导入才能打包」一条死路。
             mergeAssetsProvider.configure {
                 doLast {
                     delete(
                         fileTree(outputDir) {
                             include(
-                                "codeeditor/**/*", "template.apk"
+                                "codeeditor/**/*"
                             )
                         })
                 }
@@ -303,13 +306,25 @@ fun copyTemplateToAPP(isDebug: Boolean, to: File) {
 }
 
 val assetsDir = File(projectDir, "src/main/assets")
-if (!File(assetsDir, "template.apk").isFile) {
-    tasks.named("preBuild").dependsOn("buildTemplateApp")
-}
+
+// 无条件依赖：模板 APK 与主 App 是同一份源码的产物，改了 autojs/inrt 就必须让
+// 模板跟着重建。原先「文件已存在就不加依赖」的配置期判断会让模板永久停留在旧
+// 版本（改源码后打包出的 App 仍是旧服务名/旧 dex），且 gradlew clean assemble
+// 单次调用时 clean 已在执行期删掉模板、却不重建，产物直接缺 template.apk。
+// 是否真的重新执行交给 Gradle 的 up-to-date 机制决定：输入未变时毫秒级跳过。
+tasks.named("preBuild").dependsOn("buildTemplateApp")
 
 tasks.register("buildTemplateApp") {
     group = "build"
+    description = "把 :inrt 的模板 APK 复制为 assets/template.apk，供 App 内打包功能使用"
     dependsOn(":inrt:assembleTemplateRelease")
+    // 声明输入输出后，Gradle 才能在「inrt 产物未变」时跳过本任务（否则每次白拷 20MB）。
+    // 输入必须用 provider 惰性求值：本工程开启了 org.gradle.configureondemand，配置期
+    // :inrt 尚未被配置，直接访问它的 buildOutputs 会抛
+    // "Extension with name 'buildOutputs' does not exist"。provider 的求值发生在
+    // 本任务的输入快照阶段，此时 dependsOn 的上游已经构建完毕，扩展也早已注册。
+    inputs.file(provider { project(":inrt").buildOutputs.named("template-release").get().outputFile })
+    outputs.file(File(assetsDir, "template.apk"))
     doFirst {
         copyTemplateToAPP(false, assetsDir)
     }
