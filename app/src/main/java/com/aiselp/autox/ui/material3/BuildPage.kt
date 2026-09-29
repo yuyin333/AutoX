@@ -63,9 +63,12 @@ import com.aiselp.autox.ui.material3.components.DialogController
 import com.aiselp.autox.ui.material3.components.DialogTitle
 import com.aiselp.autox.ui.material3.components.InputBox
 import com.aiselp.autox.ui.material3.components.M3TopAppBar
+import com.stardust.toast
 import com.stardust.util.IntentUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.autojs.autojs.build.ApkBuilderPluginHelper
+import org.autojs.autojs.build.ApkBuilderPluginHelper.TemplateSource
 import org.autojs.autojs.external.fileprovider.AppFileProvider
 import org.autojs.autojs.tool.startActivity
 import org.autojs.autojs.ui.build.BuildViewModel
@@ -87,7 +90,9 @@ fun BuildPage(viewModel: BuildViewModel) {
         }
     }
 
-    remember { BuildApkAssetDialog() }.Dialog()
+    var templateRefreshKey by remember { mutableStateOf(0) }
+
+    remember { BuildApkAssetDialog() }.Dialog(onTemplateChanged = { templateRefreshKey++ })
 
     BackHandler { finishDialog.exitCheck() }
     Scaffold(topBar = {
@@ -110,6 +115,7 @@ fun BuildPage(viewModel: BuildViewModel) {
             FileCard(model = viewModel)
             ConfigCard(model = viewModel)
             PackagingOptionCard(model = viewModel)
+            TemplateCard(refreshKey = templateRefreshKey)
             RunConfigCard(model = viewModel)
             SpecialPermissionsCard(model = viewModel)
             EncryptCard(model = viewModel)
@@ -297,6 +303,48 @@ private fun PackagingOptionCard(model: BuildViewModel) {
             model::isRequiredDefaultOcrModelData,
             stringResource(R.string.text_required_default_paddle_ocr_model)
         )
+    }
+}
+
+/**
+ * 展示打包实际使用的模板来源，并提供「恢复内置模板」入口。
+ *
+ * 这个卡片存在的意义是消除一类静默故障：用户导入过一次模板后，那份模板会遮蔽内置模板且不随
+ * App 更新（旧 dex、旧清单、旧无障碍服务名），源码改动完全不传导，而界面上没有任何地方能看出来。
+ */
+@Composable
+private fun TemplateCard(refreshKey: Int) {
+    val context = LocalContext.current
+    var status by remember(refreshKey) {
+        mutableStateOf(ApkBuilderPluginHelper.getTemplateStatus(context))
+    }
+    val sourceText = when (status.source) {
+        TemplateSource.IMPORTED -> stringResource(
+            R.string.text_template_source_imported,
+            status.importedVersion.orEmpty()
+        )
+
+        TemplateSource.BUILT_IN -> stringResource(R.string.text_template_source_built_in)
+        TemplateSource.MISSING -> stringResource(R.string.text_template_source_missing)
+    }
+    BuildCard(stringResource(R.string.text_template_apk)) {
+        Text(text = stringResource(R.string.text_template_source) + "：" + sourceText)
+        if (status.importedObsolete) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(stringResource(R.string.text_template_import_obsolete))
+        } else if (status.source == TemplateSource.IMPORTED) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(stringResource(R.string.text_template_import_shadow_hint))
+        }
+        if (status.source == TemplateSource.IMPORTED || status.importedObsolete) {
+            TextButton(onClick = {
+                ApkBuilderPluginHelper.clearTemplateApkAsset(context)
+                status = ApkBuilderPluginHelper.getTemplateStatus(context)
+                toast(context, R.string.text_template_restored)
+            }) {
+                Text(stringResource(R.string.text_restore_built_in_template))
+            }
+        }
     }
 }
 

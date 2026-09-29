@@ -28,7 +28,7 @@ class BuildApkAssetDialog : DialogController() {
         DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
 
     @Composable
-    fun Dialog() {
+    fun Dialog(onTemplateChanged: () -> Unit = {}) {
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
         val dialog = DialogController(properties)
@@ -46,6 +46,7 @@ class BuildApkAssetDialog : DialogController() {
                     withContext(Dispatchers.Main) {
                         dialog.dismiss()
                         if (s) {
+                            onTemplateChanged()
                             toast(context, R.string.text_import_succeed)
                         } else {
                             show()

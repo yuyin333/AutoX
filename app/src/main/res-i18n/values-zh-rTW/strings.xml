@@ -457,6 +457,15 @@
   <string name="air_dialog_action_failed">OK</string>
   <string name="text_template_apk_not_found">找不到模板apk，請把\"build/outputs/apk/common/release\"目錄下的apk文件複製到\"app/src/main/assets\"並命名為\"template.apk\"再重新構建</string>
   <string name="desc_back">後退</string>
+  <string name="text_template_apk">打包模板</string>
+  <string name="text_template_source">當前模板來源</string>
+  <string name="text_template_source_built_in">內置（隨 App 版本更新）</string>
+  <string name="text_template_source_imported">導入（%1$s）</string>
+  <string name="text_template_source_missing">缺失</string>
+  <string name="text_template_import_shadow_hint">導入的模板會遮蔽內置模板，且不隨 App 更新；App 升級或無障礙服務改名後會自動失效並回退。</string>
+  <string name="text_template_import_obsolete">檢測到導入的模板與當前 App 不匹配，已自動改用內置模板。</string>
+  <string name="text_restore_built_in_template">恢復內置模板</string>
+  <string name="text_template_restored">已恢復為內置模板</string>
   <string name="desc_add_icon">添加圖標</string>
   <string name="text_default_signature">默認簽名</string>
   <string name="desc_done">完成</string>

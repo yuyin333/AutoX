@@ -496,6 +496,15 @@
     <string name="text_error_no_storage_permission">没有存储权限，无法写入输出目录。请在系统设置中授予「所有文件访问权限」，或把输出目录改到应用私有目录后重试。</string>
     <string name="format_error_output_dir_not_writable">输出目录不可写：%1$s。请更换输出目录（建议改到应用私有目录）后重试。</string>
     <string name="desc_back">后退</string>
+    <string name="text_template_apk">打包模板</string>
+    <string name="text_template_source">当前模板来源</string>
+    <string name="text_template_source_built_in">内置（随 App 版本更新）</string>
+    <string name="text_template_source_imported">导入（%1$s）</string>
+    <string name="text_template_source_missing">缺失</string>
+    <string name="text_template_import_shadow_hint">导入的模板会遮蔽内置模板，且不随 App 更新；App 升级或无障碍服务改名后会自动失效并回退。</string>
+    <string name="text_template_import_obsolete">检测到导入的模板与当前 App 不匹配，已自动改用内置模板。</string>
+    <string name="text_restore_built_in_template">恢复内置模板</string>
+    <string name="text_template_restored">已恢复为内置模板</string>
     <string name="desc_add_icon">添加图标</string>
     <string name="text_default_signature">默认签名</string>
     <string name="desc_done">完成</string>
