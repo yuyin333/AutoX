@@ -13,7 +13,6 @@ import com.stardust.autojs.runtime.exception.ScriptException
 import com.stardust.autojs.runtime.exception.ScriptInterruptedException
 import com.stardust.autojs.script.JavaScriptSource
 import com.stardust.view.accessibility.AccessibilityService
-import com.stardust.view.accessibility.AccessibilityServiceUtils
 import org.autojs.autoxjs.inrt.R
 
 
@@ -38,11 +37,10 @@ class AutoJs private constructor(application: Application) :
             return
         }
         var errorMessage: String? = null
-        if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(
-                application,
-                AccessibilityService::class.java
-            )
-        ) {
+        // 必须用清单中声明的那个服务类（core.accessibility.AccessibilityService）做判定：
+        // isAccessibilityServiceEnabled 以 ComponentName 逐项「全等」比较，传基类永远返回 false。
+        // 统一走 AccessibilityServiceTool，避免服务类名散落多处（改名时只需改一处）。
+        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(application)) {
             errorMessage =
                 GlobalAppContext.getString(R.string.text_auto_operate_service_enabled_but_not_running)
         } else {
@@ -70,11 +68,8 @@ class AutoJs private constructor(application: Application) :
             return
         }
         var errorMessage: String? = null
-        if (AccessibilityServiceUtils.isAccessibilityServiceEnabled(
-                application,
-                AccessibilityService::class.java
-            )
-        ) {
+        // 同 ensureAccessibilityServiceEnabled()：判定类必须与清单声明一致，不可传基类。
+        if (AccessibilityServiceTool.isAccessibilityServiceEnabled(application)) {
             errorMessage =
                 GlobalAppContext.getString(R.string.text_auto_operate_service_enabled_but_not_running)
         } else {
