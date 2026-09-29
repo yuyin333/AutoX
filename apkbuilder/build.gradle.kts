@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         minSdk = versions.mini
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters.add("arm64-v8a")
         }

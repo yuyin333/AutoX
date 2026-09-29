@@ -1,19 +1,19 @@
 package org.autojs.autojs.devplugin;
 
 interface IDevPluginService {
-    // 连接到电脑
+    // connect to computer
     void connectToComputer(String url);
 
-    // 断开连接
+    // disconnect from computer
     void disconnectFromComputer();
 
-    // 获取连接状态
+    // get computer connection status
     boolean isComputerConnected();
 
-    // 获取保存的服务器地址
+    // get saved server address
     String getSavedServerAddress();
 
-    // 启动/停止 USB 调试
+    // start/stop USB debug
     void startUSBDebug();
     void stopUSBDebug();
     boolean isUSBDebugActive();
