@@ -123,8 +123,11 @@ android {
             if (signing != null) {
                 signingConfig = signing
             }
+            // 代码混淆 + 精简：减小体积，同时抹掉类名/字符串里可被风控识别的特征。
+            // 资源压缩（isShrinkResources）单独一步再开 —— 它依赖动态资源查找，
+            // 需要真机验证后再启用，避免混淆与资源压缩两个变量混在一起排查。
             isShrinkResources = false
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             setProguardFiles(
                 listOf(
                     getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -163,12 +166,9 @@ android {
             // 「导入模板」失效，就只剩「必须手动导入才能打包」一条死路。
             mergeAssetsProvider.configure {
                 doLast {
-                    delete(
-                        fileTree(outputDir) {
-                            include(
-                                "codeeditor/**/*"
-                            )
-                        })
+                    // 整个目录递归删除。原先用 fileTree(outputDir) { include("codeeditor/**/*") }
+                    // 只会删文件、留下空的 codeeditor 目录树。
+                    delete(outputDir.get().asFile.resolve("codeeditor"))
                 }
             }
         }
