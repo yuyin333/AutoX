@@ -102,7 +102,8 @@ import org.autojs.autojs.ui.settings.SettingsActivity
 import org.autojs.autoxjs.R
 
 private const val TAG = "DrawerPage"
-// vs code插件地址
+// VSCode 插件帮助地址（原指向第三方仓库 kkevsekk1/Auto.js-VSCode-Extension）。
+// 留空 = 不提供该帮助入口：ConnectionDialog 里的「帮助」按钮会整体不显示。
 private const val URL_DEV_PLUGIN = ""
 
 // 项目/下载/反馈地址统一取自 AppLinks（个人 fork 的仓库），不再硬编码原作者仓库
@@ -724,6 +725,8 @@ private fun DialogController.ConnectComputerDialog(
     var host by remember {
         mutableStateOf(Pref.getServerAddressOrDefault(WifiTool.getRouterIp(context)))
     }
+    // 为空表示未配置帮助地址，此时不显示「帮助」按钮（见下方 negativeText）
+    val helpUrl = URL_DEV_PLUGIN.takeIf { it.isNotBlank() }
     BaseDialog(
         onDismissRequest = { scope.launch { dismiss() } },
         title = {
@@ -735,10 +738,15 @@ private fun DialogController.ConnectComputerDialog(
             Pref.saveServerAddress(host)
             connectServer(getUrl(host))
         },
-        negativeText = stringResource(id = R.string.text_help),
-        onNegativeClick = {
-            scope.launch { dismiss() }
-            IntentUtil.browse(context, URL_DEV_PLUGIN)
+        // 「帮助」按钮只在配置了有效地址时才显示。地址为空时传 null，
+        // BaseDialog 会整体不渲染该按钮 —— 避免留下"点了没反应"的死按钮
+        // （IntentUtil.browse() 对空串会抛 ActivityNotFoundException 并被自身吞掉）。
+        negativeText = helpUrl?.let { stringResource(id = R.string.text_help) },
+        onNegativeClick = helpUrl?.let { url ->
+            {
+                scope.launch { dismiss() }
+                IntentUtil.browse(context, url)
+            }
         },
         neutralText = stringResource(id = R.string.text_scan_qr),
         onNeutralClick = {
