@@ -30,6 +30,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -41,6 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -58,6 +62,7 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.autojs.autojs.model.explorer.Explorer
@@ -106,15 +111,54 @@ open class ExplorerViewKt : FrameLayout, ViewTreeObserver.OnGlobalFocusChangeLis
     val currentPage get() = currentPageState.currentPage
     private var disposable: Disposable? = null
     private var isRefreshing by mutableStateOf(false)
+
+    /**
+     * 下拉刷新指示器的状态。
+     *
+     * 必须由我们自己持有并传给 [PullToRefreshBox]：Material3 只有在「观测到 isRefreshing 变化」
+     * 时才会把指示器收回（见 PullToRefreshModifierNode.update()），有两种情况它会漏掉，
+     * 漏掉后指示器就**永远停在屏幕上**（箭头或转圈），必须由我们兜底收回：
+     *
+     * 1. **松手瞬间手指速度≈0**（拉到底后停住几秒再松开）：Compose 不派发 fling，
+     *    M3 的 onPreFling/onRelease 从不执行 → 既不会调 onRefresh()，也不会重置
+     *    distanceFraction，指示器停在拉出位置（画的是箭头）。
+     * 2. **刷新极快**（本地目录 10ms 内读完）：isRefreshing 的 true→false 落在同一帧内，
+     *    重组只看到最终值 false，M3 的 update() 观测不到变化 → 不会调 animateToHidden()，
+     *    指示器停在阈值处（画的是转圈）。
+     */
+    private var pullState: PullToRefreshState? = null
     private var scope: CoroutineScope? = null
 
     init {
         val composeView = ComposeView(context)
         composeView.setContent {
             scope = rememberCoroutineScope()
+            @OptIn(ExperimentalMaterial3Api::class)
+            val state = rememberPullToRefreshState()
+            pullState = state
             PullToRefreshBox(
                 isRefreshing = isRefreshing,
-                onRefresh = { onRefresh() }
+                onRefresh = { onRefresh() },
+                state = state,
+                // 观察一次完整的手势（按下→全部抬起），抬指后给 M3 一点时间处理 fling，
+                // 再兜底把「没人收回」的指示器收掉。本 Modifier 不消耗任何事件，
+                // 因此不会影响下拉、滚动或列表点击。
+                modifier = Modifier.pointerInput(Unit) {
+                    while (true) {
+                        awaitPointerEventScope {
+                            var down = false
+                            while (!down) {
+                                down = awaitPointerEvent(PointerEventPass.Final).changes.any { it.pressed }
+                            }
+                            var up = false
+                            while (!up) {
+                                up = awaitPointerEvent(PointerEventPass.Final).changes.none { it.pressed }
+                            }
+                        }
+                        delay(SETTLE_DELAY_MS)
+                        settleRefreshIndicator()
+                    }
+                }
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     projectToolbar.Content()
@@ -135,6 +179,17 @@ open class ExplorerViewKt : FrameLayout, ViewTreeObserver.OnGlobalFocusChangeLis
             )
         )
         initExplorerItemListView()
+    }
+
+    /**
+     * 统一出口：只要没有刷新在进行、而指示器还露着，就把它收回。
+     *
+     * 该判断是幂等的 —— 指示器已在 0 位或正在刷新时直接返回，因此可以在多处安全调用。
+     */
+    private fun settleRefreshIndicator() {
+        val state = pullState ?: return
+        if (isRefreshing || state.distanceFraction <= 0f) return
+        scope?.launch { state.animateToHidden() }
     }
 
     constructor(context: Context) : super(context)
@@ -292,12 +347,24 @@ open class ExplorerViewKt : FrameLayout, ViewTreeObserver.OnGlobalFocusChangeLis
             .observeOn(Schedulers.computation())
             .doOnSuccess { obj: ExplorerItemList -> obj.sort() }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { list: ExplorerItemList ->
-                explorerItemList = list
-                explorerAdapter.notifyDataSetChanged()
-                isRefreshing = false
-                post { explorerItemListView.scrollToPosition(currentPageState.scrollY) }
-            }
+            .subscribe(
+                { list: ExplorerItemList ->
+                    explorerItemList = list
+                    explorerAdapter.notifyDataSetChanged()
+                    isRefreshing = false
+                    // 兜底：刷新太快时 M3 观测不到 isRefreshing 的变化，不会收回指示器
+                    settleRefreshIndicator()
+                    post { explorerItemListView.scrollToPosition(currentPageState.scrollY) }
+                },
+                // 必须处理 onError：原来的 .subscribe {} 只有 onNext，
+                // 一旦取子项失败，isRefreshing 会永远停在 true（转圈不消失），
+                // 而且 RxJava 会把异常抛成 OnErrorNotImplementedException。
+                { e: Throwable ->
+                    Log.e(LOG_TAG, "loadItemList failed", e)
+                    isRefreshing = false
+                    settleRefreshIndicator()
+                }
+            )
     }
 
     fun onExplorerChange(event: ExplorerChangeEvent) {
@@ -342,7 +409,11 @@ open class ExplorerViewKt : FrameLayout, ViewTreeObserver.OnGlobalFocusChangeLis
     }
 
     fun onRefresh() {
-        explorer!!.notifyChildrenChanged(currentPageState.currentPage)
+        // M3 的约定是「onRefresh 回调 → host 置 isRefreshing = true」。
+        // 这里必须同步置位：即使随后很快就会变回 false，也要让「刷新中」这个状态
+        // 至少存在过，否则 M3 观测不到变化、不会走它自己的收回流程。
+        isRefreshing = true
+        explorer?.notifyChildrenChanged(currentPageState.currentPage)
         projectToolbar.refresh()
     }
 
@@ -408,6 +479,7 @@ open class ExplorerViewKt : FrameLayout, ViewTreeObserver.OnGlobalFocusChangeLis
             withContext(Dispatchers.Main) {
                 explorerAdapter.notifyDataSetChanged()
                 isRefreshing = false
+                settleRefreshIndicator()
             }
         }
     }
@@ -706,6 +778,9 @@ open class ExplorerViewKt : FrameLayout, ViewTreeObserver.OnGlobalFocusChangeLis
 
     companion object {
         private const val LOG_TAG = "ExplorerView"
+
+        /** 抬指后等这么久再兜底收回指示器，给 M3 留出处理 fling / 触发 onRefresh 的时间。 */
+        private const val SETTLE_DELAY_MS = 120L
         const val VIEW_TYPE_ITEM = 0
         const val VIEW_TYPE_PAGE = 1
 
