@@ -2,7 +2,6 @@ package org.autojs.autojs.tool;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.stardust.app.GlobalAppContext;
@@ -55,7 +54,8 @@ public class AccessibilityServiceTool {
         String serviceName = GlobalAppContext.get().getPackageName() + "/" + accessibilityService.getName();
         try {
             String script = AccessibilityServiceSettings.buildEnableScript(serviceName);
-            return TextUtils.isEmpty(ProcessShell.execCommand(script, true).error);
+            ProcessShell.Result result = ProcessShell.execCommand(script, true);
+            return AccessibilityServiceSettings.isEnableSucceeded(result.result);
         } catch (Exception e) {
             String msg = e.getMessage();
             if (msg != null && (msg.contains("error=13") || msg.contains("Permission denied"))) {

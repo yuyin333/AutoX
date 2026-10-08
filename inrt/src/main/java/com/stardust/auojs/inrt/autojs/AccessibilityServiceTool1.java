@@ -2,7 +2,6 @@ package com.stardust.auojs.inrt.autojs;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.stardust.app.GlobalAppContext;
 import com.stardust.autojs.core.accessibility.AccessibilityServiceSettings;
@@ -50,7 +49,8 @@ public class AccessibilityServiceTool1 {
         String serviceName = GlobalAppContext.get().getPackageName() + "/" + accessibilityService.getName();
         try {
             String script = AccessibilityServiceSettings.buildEnableScript(serviceName);
-            return TextUtils.isEmpty(ProcessShell.execCommand(script, true).error);
+            ProcessShell.Result result = ProcessShell.execCommand(script, true);
+            return AccessibilityServiceSettings.isEnableSucceeded(result.result);
         } catch (Exception e) {
             return false;
         }

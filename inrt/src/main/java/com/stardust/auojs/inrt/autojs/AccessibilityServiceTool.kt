@@ -4,7 +4,6 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import android.text.TextUtils
 import com.stardust.app.GlobalAppContext
 import com.stardust.app.GlobalAppContext.get
 import com.stardust.autojs.core.accessibility.AccessibilityServiceSettings
@@ -21,7 +20,8 @@ object AccessibilityServiceTool {
         val serviceName = context.packageName + "/" + accessibilityService.name
         return try {
             val script = AccessibilityServiceSettings.buildEnableScript(serviceName)
-            TextUtils.isEmpty(ProcessShell.execCommand(script, true).error)
+            val result = ProcessShell.execCommand(script, true)
+            AccessibilityServiceSettings.isEnableSucceeded(result.result)
         } catch (ignored: Exception) {
             false
         }
