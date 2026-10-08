@@ -64,6 +64,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.preference.PreferenceManager
 import coil.compose.rememberAsyncImagePainter
+import com.aiselp.autox.AppLinks
 import com.aiselp.autox.ui.material3.components.AlertDialog
 import com.aiselp.autox.ui.material3.components.BaseDialog
 import com.aiselp.autox.ui.material3.components.DialogController
@@ -102,9 +103,11 @@ import org.autojs.autoxjs.R
 
 private const val TAG = "DrawerPage"
 private const val URL_DEV_PLUGIN = "https://github.com/kkevsekk1/Auto.js-VSCode-Extension"
-private const val PROJECT_ADDRESS = "https://github.com/aiselp/AutoX"
-private const val DOWNLOAD_ADDRESS = "https://github.com/aiselp/AutoX/releases"
-private const val FEEDBACK_ADDRESS = "https://github.com/aiselp/AutoX/issues"
+
+// 项目/下载/反馈地址统一取自 AppLinks（个人 fork 的仓库），不再硬编码原作者仓库
+private val PROJECT_ADDRESS = AppLinks.PROJECT
+private val DOWNLOAD_ADDRESS = AppLinks.RELEASES
+private val FEEDBACK_ADDRESS = AppLinks.ISSUES
 
 
 @Composable

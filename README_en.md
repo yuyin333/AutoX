@@ -1,11 +1,10 @@
 # AutoX.js v7
 <p align="center"> 
   
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/aiselp/AutoX/total)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/aiselp/AutoX)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/aiselp/AutoX/android-test.yml)
-![GitHub Release](https://img.shields.io/github/v/release/aiselp/AutoX)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ca72518c8bd548f9a350d5a15e2ed9ea)](https://app.codacy.com/gh/aiselp/AutoX/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/yuyin333/AutoX/total)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/yuyin333/AutoX)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/yuyin333/AutoX/android-test.yml)
+![GitHub Release](https://img.shields.io/github/v/release/yuyin333/AutoX)
 
 </p>
 
@@ -32,7 +31,7 @@ About the two agreements:
 
 * Autox.js documentation: https://autox-doc.vercel.app/
 
-* Open source address: https://github.com/aiselp/AutoX/
+* Open source address: https://github.com/yuyin333/AutoX/
 
 * PC-side development [VS Code plug-in](https://marketplace.visualstudio.com/items?itemName=aaroncheng.auto-js-vsce-fixed)
 
@@ -41,7 +40,7 @@ About the two agreements:
 * autoxjs [update log](CHANGELOG.md)
 
 ### Autox.js download address:
-[releases](https://github.com/aiselp/AutoX/releases)
+[releases](https://github.com/yuyin333/AutoX/releases)
 If the download is too slow, you can right-click and copy the link address of the APK file in Release Assets, and paste it to [http://toolwa.com/github/](http://toolwa.com/github/) and other github acceleration websites to download
 
 #### APK version description:
@@ -80,7 +79,7 @@ This software is different from software such as Keyboard Wizard. The main diffe
 - [x] [Rhino](https://github.com/mozilla/rhino/) upgraded to stable version 1.8.0, supporting more ES6+ syntax.
 
 ### Examples
-You can view some examples [here](https://github.com/aiselp/AutoX/tree/setup-v7/app/src/main/assets/sample), or view and run them directly in the app.
+You can view some examples [here](https://github.com/yuyin333/AutoX/tree/setup-v7/app/src/main/assets/sample), or view and run them directly in the app.
 
 ### Compilation related:
 Environment Requirements: Java version 17

@@ -1,11 +1,10 @@
 # Autox.js v7
 <p align="center"> 
   
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/aiselp/AutoX/total)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/aiselp/AutoX)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/aiselp/AutoX/android-test.yml)
-![GitHub Release](https://img.shields.io/github/v/release/aiselp/AutoX)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ca72518c8bd548f9a350d5a15e2ed9ea)](https://app.codacy.com/gh/aiselp/AutoX/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/yuyin333/AutoX/total)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/yuyin333/AutoX)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/yuyin333/AutoX/android-test.yml)
+![GitHub Release](https://img.shields.io/github/v/release/yuyin333/AutoX)
 
 </p>
 
@@ -30,13 +29,13 @@
 ### 现在的Autox.js：
 
 * Autox.js文档： https://autox-doc.vercel.app/
-* 开源地址： https://github.com/aiselp/AutoX/
+* 开源地址： https://github.com/yuyin333/AutoX/
 * pc端开发[VS Code 插件](https://marketplace.visualstudio.com/items?itemName=aaroncheng.auto-js-vsce-fixed)
 * 官方论坛： [www.autoxjs.com](http://www.autoxjs.com)
 * autoxjs[更新日志](CHANGELOG.md)
 
 ### Autox.js下载地址：
-[releases](https://github.com/aiselp/AutoX/releases)  
+[releases](https://github.com/yuyin333/AutoX/releases)  
 如果下载过慢可以右键复制 Release Assets 中APK文件的链接地址，粘贴到 [http://toolwa.com/github/](http://toolwa.com/github/) 等github加速网站下载
 
 #### APK版本说明：
@@ -75,7 +74,7 @@
 - [x] [Rhino](https://github.com/mozilla/rhino/)升级至v1.8.0稳定版，支持更多es6+语法
 
 ### 示例
-可在[这里](https://github.com/aiselp/AutoX/tree/setup-v7/app/src/main/assets/sample)查看一些示例，或者直接在应用内查看和运行。
+可在[这里](https://github.com/yuyin333/AutoX/tree/setup-v7/app/src/main/assets/sample)查看一些示例，或者直接在应用内查看和运行。
 
 
 ### 编译相关：

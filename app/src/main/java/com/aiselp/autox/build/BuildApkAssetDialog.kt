@@ -11,6 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
+import com.aiselp.autox.AppLinks
 import com.aiselp.autox.ui.material3.components.BaseDialog
 import com.aiselp.autox.ui.material3.components.DialogController
 import com.aiselp.autox.ui.material3.components.DialogTitle
@@ -88,6 +89,7 @@ class BuildApkAssetDialog : DialogController() {
     }
 
     companion object {
-        private const val templateApkDownloadUrl = "https://github.com/aiselp/AutoX/releases/"
+        // 缺内置模板时提示用户去取模板的地方 —— 指向本 fork 的 releases（原为原作者仓库）
+        private val templateApkDownloadUrl = "${AppLinks.RELEASES}/"
     }
 }
