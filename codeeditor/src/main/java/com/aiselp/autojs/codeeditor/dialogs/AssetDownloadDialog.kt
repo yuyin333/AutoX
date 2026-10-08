@@ -44,6 +44,7 @@ open class AssetDownloadDialog() : DialogController() {
     }
 
     companion object {
-        private const val assetDownloadUri = "https://github.com/aiselp/vscode-mobile/releases"
+        // 指向本仓库自己的 fork（编辑器产物的实际来源）
+        private const val assetDownloadUri = "https://github.com/yuyin333/vscode-mobile/releases"
     }
 }

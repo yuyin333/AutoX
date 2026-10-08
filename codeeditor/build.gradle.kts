@@ -56,14 +56,20 @@ dependencies {
 }
 
 tasks.register("downloadEditor") {
+    // 编辑器产物由本仓库自己的 fork 提供，不再依赖原作者仓库
+    val repo = "yuyin333/vscode-mobile"
     val tag = "v0.4.0"
-    val uri = "https://github.com/aiselp/vscode-mobile/releases/download/${tag}/dist.zip"
+    val uri = "https://github.com/$repo/releases/download/$tag/dist.zip"
     val assetsDir = File(projectDir, "/src/main/assets/codeeditor")
     val versionFile = File(assetsDir, "version.txt")
+    // 缓存标记必须带上仓库来源：只记 tag 的话，换仓库后仍会命中旧缓存，
+    // 于是一份来自旧仓库（甚至已失效）的产物会被静默复用 —— 构建看着正常，
+    // 实际用的却不是当前配置的来源。
+    val cacheMarker = "$repo@$tag"
     doFirst {
         logger.log(LogLevel.LIFECYCLE, "start downloadEditor")
         assetsDir.mkdirs()
-        if (versionFile.isFile && versionFile.readText() == tag) {
+        if (versionFile.isFile && versionFile.readText().trim() == cacheMarker) {
             logger.log(LogLevel.LIFECYCLE, "skip download")
             return@doFirst
         }
@@ -71,7 +77,7 @@ tasks.register("downloadEditor") {
             src(uri)
             dest(File(assetsDir, "dist.zip"))
         }
-        versionFile.writeText(tag)
+        versionFile.writeText(cacheMarker)
     }
 }
 tasks.findByName("preBuild")?.dependsOn("downloadEditor")
