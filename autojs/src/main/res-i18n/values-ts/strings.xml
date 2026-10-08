@@ -14,7 +14,7 @@
   <string name="cancel">Khansela</string>
   <string name="text_console">Console ya xitombo</string>
   <string name="text_no_floating_window_permission">Ku hava mpfumelelo wa fasitere leri papamalaka</string>
-  <string name="text_accessibility_service_description">Swi laveka ku endla matirhelo ya switshuriwa hi ku tirhisa michini (ku tikhoma, ku tshikilela nkarhi wo leha, swipa, na swin’wana), loko swi nga tirhi, ku nga tirhisiwa ntsena swikripti leswi nga katsiki matirhelo ya otomatiki.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">Ku vekiwa tihlo ka swilotlelo a ku tirhisiwi, hi kombela u ku pfumelela eka swiletelo swa software</string>
   <string name="text_should_enable_gesture_observing">Ku vekiwa tihlo ka swikombiso swa mavoko a swi tirhisiwi, hi kombela u swi pfumelela eka swiletelo swa software</string>
   <string name="no_write_settings_permissin">Ku hava mpfumelelo wo cinca swiletelo swa sisiteme</string>

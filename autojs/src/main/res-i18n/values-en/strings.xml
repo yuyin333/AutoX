@@ -14,7 +14,7 @@
   <string name="cancel">Cancel</string>
   <string name="text_console">Console</string>
   <string name="text_no_floating_window_permission">No floating window permission</string>
-  <string name="text_accessibility_service_description">Required to automate script operations (click, long press, swipe, etc.), if disabled, only scripts that do not involve automatic operations can be executed.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">Key monitoring is not enabled, please enable it in the software settings</string>
   <string name="text_should_enable_gesture_observing">Gesture monitoring is not enabled, please enable it in software settings</string>
   <string name="no_write_settings_permissin">No permission to modify system settings</string>

@@ -14,7 +14,7 @@
   <string name="cancel">Cancella</string>
   <string name="text_console">Cunsola</string>
   <string name="text_no_floating_window_permission">Nisun permessu di finestra flottante</string>
-  <string name="text_accessibility_service_description">Ubligatoriu per automatizà l\'operazioni di script (cliccate, pressu longu, swipe, etc.), se disabilitatu, solu scripts chì ùn implicanu micca operazioni automatiche ponu esse eseguiti.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">U monitoraghju chjave ùn hè micca attivatu, per piacè attivallu in i paràmetri di u software</string>
   <string name="text_should_enable_gesture_observing">U monitoraghju di i gesti ùn hè micca attivatu, per piacè attivallu in i paràmetri di u software</string>
   <string name="no_write_settings_permissin">Nisun permessu per mudificà i paràmetri di u sistema</string>

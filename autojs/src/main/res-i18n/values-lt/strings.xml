@@ -14,7 +14,7 @@
   <string name="cancel">Atšaukti</string>
   <string name="text_console">Konsolė</string>
   <string name="text_no_floating_window_permission">Nėra leidimo plaukioti langu</string>
-  <string name="text_accessibility_service_description">Reikalingas norint automatizuoti scenarijaus operacijas (spustelėti, ilgai paspausti, braukti ir pan.), jei išjungta, gali būti vykdomi tik tie scenarijai, kuriuose nėra automatinių operacijų.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">Raktų stebėjimas neįjungtas, įjunkite jį programinės įrangos nustatymuose</string>
   <string name="text_should_enable_gesture_observing">Gestų stebėjimas neįjungtas, įjunkite jį programinės įrangos nustatymuose</string>
   <string name="no_write_settings_permissin">Nėra leidimo keisti sistemos nustatymų</string>

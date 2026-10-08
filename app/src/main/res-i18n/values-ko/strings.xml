@@ -2,7 +2,7 @@
 
 <!--Automatically translated by Globalization Translator (https://github.com/wilinz/globalization-translator)-->
 <resources>
-  <string name="text_accessibility_service_description">스크립트 작업(클릭, 길게 누르기, 스와이프 등)을 자동화하는 데 필요하며 비활성화된 경우 자동 작업이 포함되지 않은 스크립트만 실행할 수 있습니다.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_new_file">새 파일 만들기</string>
   <string name="text_create_fail">생성 실패</string>
   <string name="text_please_input_name">이름을 입력하세요</string>

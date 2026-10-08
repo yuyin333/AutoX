@@ -14,7 +14,7 @@
   <string name="cancel">取消</string>
   <string name="text_console">控制台</string>
   <string name="text_no_floating_window_permission">沒有懸浮窗權限</string>
-  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
+  <string name="text_accessibility_service_description">完全控制適用於幫助您滿足輔助功能需求的應用程式，但不適用於大多數應用程式。</string>
   <string name="text_should_enable_key_observing">按鍵監聽未啟用，請在軟件設置中開啟</string>
   <string name="text_should_enable_gesture_observing">手勢監聽未啟用，請在軟件設置中開啟</string>
   <string name="no_write_settings_permissin">沒有修改系統設置權限</string>

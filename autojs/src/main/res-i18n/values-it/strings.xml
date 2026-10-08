@@ -14,7 +14,7 @@
   <string name="cancel">Annulla</string>
   <string name="text_console">Consolle</string>
   <string name="text_no_floating_window_permission">Nessun permesso per finestra mobile</string>
-  <string name="text_accessibility_service_description">Necessario per automatizzare le operazioni di script (clic, pressione prolungata, swipe, ecc.), se disabilitato, possono essere eseguiti solo gli script che non comportano operazioni automatiche.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">Il monitoraggio dei tasti non è abilitato, abilitalo nelle impostazioni del software</string>
   <string name="text_should_enable_gesture_observing">Il monitoraggio dei gesti non è abilitato, abilitalo nelle impostazioni del software</string>
   <string name="no_write_settings_permissin">Nessuna autorizzazione per modificare le impostazioni di sistema</string>

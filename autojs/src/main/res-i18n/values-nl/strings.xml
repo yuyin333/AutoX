@@ -14,7 +14,7 @@
   <string name="cancel">Annuleren</string>
   <string name="text_console">Troosten</string>
   <string name="text_no_floating_window_permission">Geen toestemming voor zwevend venster</string>
-  <string name="text_accessibility_service_description">Vereist om scriptbewerkingen te automatiseren (klikken, lang indrukken, vegen, enz.), indien uitgeschakeld, kunnen alleen scripts worden uitgevoerd die geen automatische bewerkingen omvatten.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">Sleutelbewaking is niet ingeschakeld, schakel het in de software-instellingen in</string>
   <string name="text_should_enable_gesture_observing">Gebaarbewaking is niet ingeschakeld, schakel het in in de software-instellingen</string>
   <string name="no_write_settings_permissin">Geen toestemming om systeeminstellingen te wijzigen</string>

@@ -14,7 +14,7 @@
   <string name="cancel">취소</string>
   <string name="text_console">콘솔</string>
   <string name="text_no_floating_window_permission">부동 창 권한 없음</string>
-  <string name="text_accessibility_service_description">스크립트 작업(클릭, 길게 누르기, 스와이프 등)을 자동화하는 데 필요하며 비활성화된 경우 자동 작업이 포함되지 않은 스크립트만 실행할 수 있습니다.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">키 모니터링이 활성화되지 않았습니다. 소프트웨어 설정에서 활성화하십시오.</string>
   <string name="text_should_enable_gesture_observing">제스처 모니터링이 활성화되지 않았습니다. 소프트웨어 설정에서 활성화하십시오.</string>
   <string name="no_write_settings_permissin">시스템 설정을 수정할 권한이 없습니다.</string>

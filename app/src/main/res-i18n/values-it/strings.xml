@@ -2,7 +2,7 @@
 
 <!--Automatically translated by Globalization Translator (https://github.com/wilinz/globalization-translator)-->
 <resources>
-  <string name="text_accessibility_service_description">Necessario per automatizzare le operazioni di script (clic, pressione prolungata, swipe, ecc.), se disabilitato, possono essere eseguiti solo gli script che non comportano operazioni automatiche.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_new_file">Creare un nuovo file</string>
   <string name="text_create_fail">Impossibile creare</string>
   <string name="text_please_input_name">Si prega di inserire un nome</string>

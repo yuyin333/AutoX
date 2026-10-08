@@ -2,7 +2,7 @@
 
 <!--Automatically translated by Globalization Translator (https://github.com/wilinz/globalization-translator)-->
 <resources>
-  <string name="text_accessibility_service_description">Necesar pentru automatizarea operațiunilor de script (clic, apăsare lungă, glisare etc.), dacă este dezactivat, pot fi executate doar scripturile care nu implică operații automate.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_new_file">Creați un fișier nou</string>
   <string name="text_create_fail">Nu s-a putut crea</string>
   <string name="text_please_input_name">Vă rugăm să introduceți un nume</string>

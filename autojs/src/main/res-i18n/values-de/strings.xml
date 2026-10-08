@@ -14,7 +14,7 @@
   <string name="cancel">Absagen</string>
   <string name="text_console">Konsole</string>
   <string name="text_no_floating_window_permission">Keine schwebende Fensterberechtigung</string>
-  <string name="text_accessibility_service_description">Erforderlich zum Automatisieren von Skriptvorgängen (Klicken, langes Drücken, Wischen usw.). Wenn deaktiviert, können nur Skripts ausgeführt werden, die keine automatischen Vorgänge beinhalten.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">Die Tastenüberwachung ist nicht aktiviert, bitte aktivieren Sie sie in den Softwareeinstellungen</string>
   <string name="text_should_enable_gesture_observing">Die Gestenüberwachung ist nicht aktiviert, bitte aktivieren Sie sie in den Softwareeinstellungen</string>
   <string name="no_write_settings_permissin">Keine Berechtigung zum Ändern der Systemeinstellungen</string>

@@ -14,7 +14,7 @@
   <string name="cancel">キャンセル</string>
   <string name="text_console">コンソール</string>
   <string name="text_no_floating_window_permission">フローティング ウィンドウの権限なし</string>
-  <string name="text_accessibility_service_description">スクリプト操作 (クリック、長押し、スワイプなど) を自動化するために必要です。無効にすると、自動操作を伴わないスクリプトのみを実行できます。</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">キー監視が有効になっていません。ソフトウェア設定で有効にしてください</string>
   <string name="text_should_enable_gesture_observing">ジェスチャー監視が有効になっていません。ソフトウェア設定で有効にしてください</string>
   <string name="no_write_settings_permissin">システム設定を変更する権限がありません</string>

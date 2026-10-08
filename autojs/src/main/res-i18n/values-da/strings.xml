@@ -14,7 +14,7 @@
   <string name="cancel">Afbestille</string>
   <string name="text_console">Konsol</string>
   <string name="text_no_floating_window_permission">Ingen tilladelse til flydende vindue</string>
-  <string name="text_accessibility_service_description">Påkrævet for at automatisere script-handlinger (klik, langt tryk, swipe osv.), hvis deaktiveret, kan kun scripts, der ikke involverer automatiske handlinger, udføres.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">Nøgleovervågning er ikke aktiveret. Aktiver den i softwareindstillingerne</string>
   <string name="text_should_enable_gesture_observing">Bevægelsesovervågning er ikke aktiveret. Aktiver det i softwareindstillingerne</string>
   <string name="no_write_settings_permissin">Ingen tilladelse til at ændre systemindstillinger</string>

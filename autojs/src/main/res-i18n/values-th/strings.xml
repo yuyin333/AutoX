@@ -14,7 +14,7 @@
   <string name="cancel">ยกเลิก</string>
   <string name="text_console">คอนโซล</string>
   <string name="text_no_floating_window_permission">ไม่มีการอนุญาตหน้าต่างลอย</string>
-  <string name="text_accessibility_service_description">จำเป็นในการดำเนินการสคริปต์อัตโนมัติ (คลิก กดค้าง ปัด ฯลฯ) หากปิดใช้งาน เฉพาะสคริปต์ที่ไม่เกี่ยวข้องกับการดำเนินการอัตโนมัติเท่านั้นที่สามารถดำเนินการได้</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">ไม่ได้เปิดใช้งานการตรวจสอบคีย์ โปรดเปิดใช้งานในการตั้งค่าซอฟต์แวร์</string>
   <string name="text_should_enable_gesture_observing">ไม่ได้เปิดใช้งานการตรวจสอบท่าทางสัมผัส โปรดเปิดใช้งานในการตั้งค่าซอฟต์แวร์</string>
   <string name="no_write_settings_permissin">ไม่อนุญาตให้แก้ไขการตั้งค่าระบบ</string>

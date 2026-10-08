@@ -2,7 +2,7 @@
 
 <!--Automatically translated by Globalization Translator (https://github.com/wilinz/globalization-translator)-->
 <resources>
-  <string name="text_accessibility_service_description">Vereist om scriptbewerkingen te automatiseren (klikken, lang indrukken, vegen, enz.), indien uitgeschakeld, kunnen alleen scripts worden uitgevoerd die geen automatische bewerkingen omvatten.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_new_file">Maak een nieuw bestand aan</string>
   <string name="text_create_fail">Kan niet maken</string>
   <string name="text_please_input_name">Voer een naam in</string>

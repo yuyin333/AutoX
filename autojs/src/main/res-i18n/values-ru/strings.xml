@@ -14,7 +14,7 @@
   <string name="cancel">Отмена</string>
   <string name="text_console">Приставка</string>
   <string name="text_no_floating_window_permission">Нет разрешения плавающего окна</string>
-  <string name="text_accessibility_service_description">Требуется для автоматизации операций скриптов (щелчок, длительное нажатие, пролистывание и т. д.), если отключено, могут выполняться только скрипты, не использующие автоматические операции.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">Мониторинг ключей не включен, включите его в настройках программы.</string>
   <string name="text_should_enable_gesture_observing">Мониторинг жестов не включен, включите его в настройках программы.</string>
   <string name="no_write_settings_permissin">Нет разрешения на изменение системных настроек</string>

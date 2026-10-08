@@ -14,7 +14,7 @@
   <string name="cancel">Annuler</string>
   <string name="text_console">Console</string>
   <string name="text_no_floating_window_permission">Aucune autorisation de fenêtre flottante</string>
-  <string name="text_accessibility_service_description">Nécessaire pour automatiser les opérations de script (clic, appui long, balayage, etc.), si désactivé, seuls les scripts qui n\'impliquent pas d\'opérations automatiques peuvent être exécutés.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_should_enable_key_observing">La surveillance des clés n\'est pas activée, veuillez l\'activer dans les paramètres du logiciel</string>
   <string name="text_should_enable_gesture_observing">La surveillance des gestes n\'est pas activée, veuillez l\'activer dans les paramètres du logiciel</string>
   <string name="no_write_settings_permissin">Aucune autorisation de modifier les paramètres du système</string>

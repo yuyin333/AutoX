@@ -2,7 +2,7 @@
 
 <!--Automatically translated by Globalization Translator (https://github.com/wilinz/globalization-translator)-->
 <resources>
-  <string name="text_accessibility_service_description">Nødvendig for å automatisere skriptoperasjoner (klikk, langt trykk, sveip osv.), hvis deaktivert, kan bare skript som ikke involverer automatiske operasjoner utføres.</string>
+  <string name="text_accessibility_service_description">完全控制适用于帮助您满足辅助功能需求的应用程序，但不适用于大多数应用程序。</string>
   <string name="text_new_file">Opprette en ny fil</string>
   <string name="text_create_fail">Kunne ikke opprette</string>
   <string name="text_please_input_name">Vennligst skriv inn et navn</string>
