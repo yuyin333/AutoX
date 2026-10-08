@@ -102,7 +102,8 @@ import org.autojs.autojs.ui.settings.SettingsActivity
 import org.autojs.autoxjs.R
 
 private const val TAG = "DrawerPage"
-private const val URL_DEV_PLUGIN = "https://github.com/kkevsekk1/Auto.js-VSCode-Extension"
+// vs code插件地址
+private const val URL_DEV_PLUGIN = ""
 
 // 项目/下载/反馈地址统一取自 AppLinks（个人 fork 的仓库），不再硬编码原作者仓库
 private val PROJECT_ADDRESS = AppLinks.PROJECT
