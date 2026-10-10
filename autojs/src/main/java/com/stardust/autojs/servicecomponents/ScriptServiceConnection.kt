@@ -14,6 +14,7 @@ import com.stardust.app.GlobalAppContext
 import com.stardust.autojs.IndependentScriptService
 import com.stardust.autojs.core.console.ConsoleImpl
 import com.stardust.autojs.core.console.LogEntry
+import com.stardust.autojs.core.pref.Pref
 import com.stardust.autojs.execution.ExecutionConfig
 import com.stardust.util.UiHandler
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -169,18 +170,24 @@ class ScriptServiceConnection : ServiceConnection {
         send()
     }
 
-    private fun isForegroundServiceEnabled(): Boolean {
-        return try {
-            // 方式1：通过反射调用 Pref
-            val prefClass = Class.forName("org.autojs.autojs.Pref")
-            val method = prefClass.getMethod("isForegroundServiceEnabled")
-            method.invoke(null) as Boolean
-        } catch (e: Exception) {
-            // 方式2：直接读取 SharedPreferences
-            val prefs = GlobalAppContext.get().getSharedPreferences("org.autojs.autojs_preferences", Context.MODE_PRIVATE)
-            prefs.getBoolean("foreground_service_enabled", false)
-        }
-    }
+    /**
+     * 是否保持前台服务常驻（对应抽屉里的「前台服务」开关）。
+     *
+     * 直接使用本模块的 [Pref]：它读的就是默认 SharedPreferences 里的
+     * [com.stardust.autojs.core.pref.PrefKey.KEY_FOREGROUND_SERVICE]，
+     * 与 app 模块的 `org.autojs.autojs.Pref.isForegroundServiceEnabled()` 等价
+     * （两者都是 `PreferenceManager.getDefaultSharedPreferences(...)`，同包名 = 同一份文件）。
+     * 同模块的 [IndependentScriptService] 也是这么取的。
+     *
+     * 历史坑：这里曾用 `Class.forName("org.autojs.autojs.Pref")` 反射 —— 开启 R8 后
+     * 该类被改名（mapping: `org.autojs.autojs.Pref -> Sc.h`）而恒抛
+     * ClassNotFoundException，于是落到一个键名与文件名都已过时的回退分支
+     * （`"org.autojs.autojs_preferences"` / `"foreground_service_enabled"`，而实际是
+     * `<包名>_preferences` / `"key_foreground_service"`）→ **恒返回 false**，
+     * 导致 [ensureForegroundService] 里的"开了开关也照样 5 秒后停掉前台服务"。
+     * 现在返回值不再依赖任何反射或字符串键名。
+     */
+    private fun isForegroundServiceEnabled(): Boolean = Pref.isForegroundServiceEnabled
 
     private fun ensureForegroundService(context: Context) {
         try {
