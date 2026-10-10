@@ -182,3 +182,45 @@
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 -dontwarn reactor.blockhound.integration.BlockHoundIntegration
+
+# ===== Netty（Ktor 内嵌服务器 = DevPlugin 的「USB 调试」通道）=====
+# Netty 是反射密集型库：Channel 由 io.netty.channel.ReflectiveChannelFactory 经
+# Class.getConstructor() 反射创建；平台探测（PlatformDependent / Epoll / KQueue）同样大量用反射。
+# R8 全量模式（AGP 默认）下，这类类往往只以 Class 字面量被引用 → 类体被判为不可达而整体剥离。
+#
+# 实测（2026-10-10，开启 R8 后暴露）：mapping.txt 里 io.netty.channel.socket.nio.NioServerSocketChannel
+# 被剥成空壳（该类名下**一个成员都没有**，含无参构造器与 doReadMessages），连带 62 个 netty 类同样被剥空。
+# 后果：抽屉 → Other → 「Turn on USB debugging」开关必然失败，弹
+#   Service failed to start: Class a does not have a public non-arg constructor
+# 堆栈：io.netty.channel.ReflectiveChannelFactory.<init>() → Class.getConstructor() →
+#   NoSuchMethodException: E9.a.<init> []（消息里的 "a" 就是被混淆后的类简名）
+#
+# ⚠️ 规则范围要**收窄**：曾试过 -keep class io.netty.** { *; }（保留全部 2370 个 netty 类），
+#   功能同样有效，但 R8 单次耗时从 ~2min 暴涨到 22min（APK 体积几乎不变，133.8MiB）——
+#   因为把体积巨大的 io.netty.handler.* 编解码器也钉住不再裁剪。
+#   因此只保留"Netty 自身用反射访问的核心包"：
+#     io.netty.channel.*    ← ReflectiveChannelFactory 反射 new 出 Channel
+#     io.netty.util.*       ← ResourceLeakDetectorFactory 按**方法名**找 toLeakAwareBuffer
+#     io.netty.buffer.*     ← 同上，LeakAware Buffer 一族
+#     io.netty.bootstrap.*  ← Bootstrap/FailedChannel 一族
+#   这三处都是实测踩出来的：只留 channel.* 时启动会继续抛
+#   NoClassDefFoundError(y9.k) ← ExceptionInInitializerError ←
+#   IllegalArgumentException: Can't find '[toLeakAwareBuffer]' in y9.b
+-keep class io.netty.channel.** { *; }
+-keep class io.netty.util.** { *; }
+-keep class io.netty.buffer.** { *; }
+-keep class io.netty.bootstrap.** { *; }
+
+# 泛型签名必须原样保留：Netty 的 TypeParameterMatcher 是**按类型参数名**在
+# getGenericSuperclass() 链上查找的（MessageToMessageEncoder 构造器里找 "I"）。
+# R8 会连签名里的类型参数名一起改写 → 实测连接一进来就抛：
+#   Failed to initialize a channel. Closing: [id: 0x..., L:/127.0.0.1:9317 - R:...]
+#   java.lang.IllegalStateException: unknown type parameter 'I': class x9.p
+#     at io.netty.util.internal.TypeParameterMatcher.find0()
+#     ← io.netty.handler.codec.MessageToMessageEncoder.<init>
+#     ← HttpResponseEncoder ← HttpObjectEncoder ← HttpServerCodec
+# 用 -keepnames（只锁名字，**不**阻止裁剪/优化）即可让签名不再被改写，
+# 同时避免 -keep { *; } 带来的构建耗时暴涨。
+-keepnames class io.netty.** { *; }
+-keepattributes Signature
+-dontwarn io.netty.**
