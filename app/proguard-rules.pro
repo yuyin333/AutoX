@@ -211,6 +211,45 @@
 -keep class io.netty.buffer.** { *; }
 -keep class io.netty.bootstrap.** { *; }
 
+# ===== Ktor（DevPlugin 的 USB 调试 WebSocket 通道）=====
+# 现象（2026-10-10 实测）：开启 R8 后，「Turn on USB debug」的服务端能接受 WebSocket
+# 升级（HTTP 101 正常），但**一个帧都发不出去** —— 连 Ktor 每 10s 的 ping 都没有，
+# 连接也一直不关闭。VS Code 插件（以及扩展自带的 MCP 通道）因此握手超时后断开。
+#
+# 已定位到 R8：同一份代码，`common` debug（minifyEnabled=false）下一切正常
+# （手机立刻发出 hello，客户端应答后被 accept，ping 正常），release（R8）下完全静默。
+# 机制：Ktor 的 WebSocket 写路径要穿过 io.ktor.utils.io（ByteBufferChannel/ByteReadPacket/
+# 对象池）与 io.ktor.websocket（RawWebSocketCommon 的 writer/reader 协程）；写不出去时
+# Ktor 只用 catch(Throwable){} 吞掉，devplugin 侧只剩"send() 成功但帧不上线"。
+# mapping.txt 里被 R8 剥成空壳的 Ktor 类**全部**集中在 io.ktor.utils.io.*：
+#   io.ktor.utils.io.internal.JoiningState / core.BuilderKt / core.StringsJVMKt /
+#   pool.PoolKt / ExceptionUtilsJvmKt$safeCtor$1
+# 后面那个正是 io.ktor.utils.io.ExceptionUtilsJvmKt.tryCopyException —— 它用
+# 反射（Class.constructors / Class.declaredFields）复制异常，被 ByteBufferChannel 调用。
+# 只保留上面 3 个包不够（实测仍静默），改为整体保留 io.ktor.**：
+# Ktor 的 WebSocket 写路径横跨 io.ktor.utils.io / io.ktor.websocket /
+# io.ktor.server.netty.cio（ByteChannel -> socket 的转发协程），且大量使用
+# @Suppress("INVISIBLE_MEMBER") 的 inline 函数访问 internal 成员，任何一处被
+# R8 改写都可能让"写"永久挂起（异常还会被 catch(Throwable){} 吞掉）。
+-keep class io.ktor.** { *; }
+-dontwarn io.ktor.**
+
+# ===== Rhino 按「类名 + 方法名」反射调用的 Java API =====
+# App 自带的前端模块 autojs/src/main/assets/v6modules/*.js 是给 Rhino 跑的，
+# 里面直接写 Java 全限定名，例如：
+#   com.stardust.app.GlobalAppContext.getBuildConfig().VERSION_CODE / VERSION_NAME
+#   com.stardust.autojs.util.ArrayBufferUtil.getBytes / fromBytes
+#   com.stardust.automator.UiObject.Companion.createRoot
+# 后两组所在的包已有 keep；但 com.stardust.app.** 没有 → 开启 R8 后
+# GlobalAppContext 被改名（实测 mapping: com.stardust.app.GlobalAppContext -> P7.c），
+# Rhino 解析不到该类，只能退化成 JavaPackage，于是调用时报：
+#   TypeError: Cannot call property getBuildConfig in object
+#   [JavaPackage com.stardust.app.GlobalAppContext]. It is not a function, it is "object".
+# 表象是 VS Code 插件的「获取控件树 / 截图」之类操作**超时**（脚本一启动就抛异常，
+# 不会回传结果）。故把该包整体保留。
+-keep class com.stardust.app.** { *; }
+
+
 # 泛型签名必须原样保留：Netty 的 TypeParameterMatcher 是**按类型参数名**在
 # getGenericSuperclass() 链上查找的（MessageToMessageEncoder 构造器里找 "I"）。
 # R8 会连签名里的类型参数名一起改写 → 实测连接一进来就抛：
