@@ -7,3 +7,7 @@
 # 产生一次覆盖全仓的巨大 diff。
 *.sh    text eol=lf
 gradlew text eol=lf
+# patch/diff 也必须保持 LF：带 CRLF 的补丁在 `git apply` 时会因上下文行
+# 与目标文件不匹配而失败（本机 core.autocrlf=true，签出即被转 CRLF）。
+*.patch text eol=lf
+*.diff  text eol=lf
