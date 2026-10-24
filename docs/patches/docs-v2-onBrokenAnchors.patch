@@ -1,0 +1,14 @@
+diff --git a/docusaurus.config.ts b/docusaurus.config.ts
+index a323f0d..cc4780d 100644
+--- a/docusaurus.config.ts
++++ b/docusaurus.config.ts
+@@ -20,6 +20,9 @@ const config: Config = {
+ 
+   onBrokenLinks: 'throw',
+   onBrokenMarkdownLinks: 'warn',
++  // v7-api 由 TypeDoc 自动生成，注释中的交叉引用锚点（如 #scriptsource）常缺失，
++  // 这些属于文档内容自身的链接问题，不影响产物，置为 ignore 避免刷屏警告。
++  onBrokenAnchors: 'ignore',
+   // Even if you don't use internationalization, you can use this field to set
+   // useful metadata like html lang. For example, if your site is Chinese, you
+   // may want to replace "en" with "zh-Hans".

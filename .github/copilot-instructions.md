@@ -43,6 +43,12 @@
   ```
 - `docs/v2` 是子模块（指向 `aiselp/AutoxDoc`，detached HEAD，本地有 dirty 改动）。
   它**常年保持 dirty 是预期状态**，不要"顺手清理"，也不要提交子模块的本地 commit（会让 CI 的 `submodule update` 失败）。
+  本地那处 `docusaurus.config.ts`（加 `onBrokenAnchors: 'ignore'`）已导出为
+  `docs/patches/docs-v2-onBrokenAnchors.patch`，干净检出后这样复原：
+  ```bash
+  cd docs/v2 && git apply ../patches/docs-v2-onBrokenAnchors.patch
+  ```
+  之所以不直接提交：子模块 remote 是无写权限的上游，主仓库一旦指向本地独有 commit，CI 的 `buildDocs` 会挂。
 
 ---
 
