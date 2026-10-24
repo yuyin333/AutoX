@@ -36,6 +36,10 @@ app/signing.properties
 # ===== 构建产物（含上百 MB 的发布 APK，不入库） =====
 /app/v7/
 /app/v7_mini/
+# app/template/release/ 是 :inrt 模板产物被手工复制/解包的残留（约 20MB，
+# 与 app/src/main/assets/template.apk 同尺寸）。真正的内置模板是后者，已被跟踪；
+# 这里只是构建中间物，不入库。
+/app/template/
 
 # ===== 工具与本地临时文件 =====
 /.workbuddy/
